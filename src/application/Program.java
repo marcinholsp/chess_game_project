@@ -3,9 +3,8 @@ package application;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import chess.ChessMatch;
 import chess.ChessException;
-import chess.ChessPiece;
+import chess.ChessMatch;
 import chess.ChessPosition;
 
 public class Program {
@@ -30,7 +29,8 @@ public class Program {
 				System.out.print("Target: ");
 				ChessPosition target = UI.readChessPosition(sc);
 	
-				ChessPiece capturedPiece = chessMatch.peformChessMove(source, target);
+				chessMatch.peformChessMove(source, target);
+				
 			}
 			catch (ChessException e) {
 				System.out.println(e.getMessage());
