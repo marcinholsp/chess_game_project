@@ -16,6 +16,7 @@ public class ChessMatch {
 	private Color currentPlayer;
 	private Board board;
 	private boolean check;
+	private boolean checkMate;
 
 	private List<ChessPiece> piecesOnTheBoard = new ArrayList<>();
 	private List<ChessPiece> capturedPieces = new ArrayList<>();
@@ -42,7 +43,11 @@ public class ChessMatch {
 	public boolean getCheck() {
 		return check;
 	}
-	
+
+	public boolean getCheckMate() {
+		return checkMate;
+	}
+
 	public ChessPiece[][] getPieces() {
 		ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
 
@@ -66,15 +71,18 @@ public class ChessMatch {
 		validateSourcePosition(source);
 		validateTargetPosition(source, target);
 		Piece capturedPiece = makeMove(source, target);
-		
+
 		if (testCheck(currentPlayer)) {
 			undoMove(source, target, capturedPiece);
 			throw new ChessException("You can't put yourself on check");
 		}
-		
 		check = testCheck(opponent(currentPlayer));
 		
-		nextTurn();
+		if (testCheckMate(opponent(currentPlayer)))
+			checkMate = true;
+		else
+			nextTurn();
+
 	}
 
 	private Piece makeMove(Position source, Position target) {
@@ -145,15 +153,40 @@ public class ChessMatch {
 		return false;
 	}
 
+	private boolean testCheckMate(Color color) {
+		if (!testCheck(color))
+			return false;
+		List<ChessPiece> list = piecesOnTheBoard.stream().filter(x -> x.getColor() == color)
+				.collect(Collectors.toList());
+
+		for (ChessPiece p : list) {
+			boolean[][] mat = p.possibleMoves();
+			for (int i = 0; i < mat.length; i++) {
+				for (int j = 0; j < mat.length; j++) {
+					if (mat[i][j]) {
+						Position source = p.getChessPosition().toPosition();
+						Position target = new Position(i, j);
+						Piece capturedPiece = makeMove(source, target);
+						boolean testCheck = testCheck(color);
+						undoMove(source, target, capturedPiece);
+						if (!testCheck)
+							return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
 		piecesOnTheBoard.add(piece);
 	}
 
 	private void initialSetup() {
+		placeNewPiece('e', 8, new King(board, Color.BLACK));
 		placeNewPiece('a', 8, new Rook(board, Color.BLACK));
 		placeNewPiece('h', 8, new Rook(board, Color.BLACK));
-		placeNewPiece('e', 8, new King(board, Color.BLACK));
 
 		placeNewPiece('e', 1, new King(board, Color.WHITE));
 		placeNewPiece('a', 1, new Rook(board, Color.WHITE));
