@@ -8,12 +8,14 @@ import chess.ChessMatch;
 import chess.ChessPosition;
 import chess.Color;
 
-public class Program {
+public class TrainingMode {
 
 	public static void main(String[] args) {
 
+
 		ChessMatch chessMatch = new ChessMatch();
 		Scanner sc = new Scanner(System.in);
+		
 
 		while (!chessMatch.getCheckMate()) {
 			try {
@@ -25,7 +27,7 @@ public class Program {
 				
 				boolean[][] possibleMoves = chessMatch.possibleMoves(source);
 				UI.clearScreen();
-				UI.printBoard(chessMatch.getPieces(), possibleMoves, chessMatch.getCurrentPlayer());
+				UI.printBoard(chessMatch.getPieces(), possibleMoves, Color.WHITE);
 				System.out.println();
 				System.out.print("Target: ");
 				ChessPosition target = UI.readChessPosition(sc);
@@ -45,6 +47,8 @@ public class Program {
 		UI.clearScreen();
 		UI.printMatch(chessMatch);
 		sc.close();
+	
+
 	}
 
 }

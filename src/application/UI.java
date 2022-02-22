@@ -49,7 +49,7 @@ public class UI {
 	}
 
 	public static void printMatch(ChessMatch chessMatch) {
-		printBoard(chessMatch.getPieces());
+		printBoard(chessMatch.getPieces(), chessMatch.getCurrentPlayer());
 		System.out.println();
 		printCapturedPieces(chessMatch.getCapturedPieces());
 		System.out.println();
@@ -58,33 +58,72 @@ public class UI {
 			System.out.println("Waiting player: " + chessMatch.getCurrentPlayer());
 			if (chessMatch.getCheck())
 				System.out.println("CHECK!");
+		} else {
+			System.out.println("CHECKMATE!");
+			System.out.println("Winner: " + chessMatch.getCurrentPlayer());
 		}
-		else {
+	}
+	
+	public static void printMatch(ChessMatch chessMatch, Color color) {
+		printBoard(chessMatch.getPieces(), color);
+		System.out.println();
+		printCapturedPieces(chessMatch.getCapturedPieces());
+		System.out.println();
+		System.out.println("Turn: " + chessMatch.getTurn());
+		if (!chessMatch.getCheckMate()) {
+			System.out.println("Waiting player: " + chessMatch.getCurrentPlayer());
+			if (chessMatch.getCheck())
+				System.out.println("CHECK!");
+		} else {
 			System.out.println("CHECKMATE!");
 			System.out.println("Winner: " + chessMatch.getCurrentPlayer());
 		}
 	}
 
-	private static void printBoard(ChessPiece[][] pieces) {
-		for (int i = 0; i < pieces.length; i++) {
-			System.out.print((8 - i) + " ");
-			for (int j = 0; j < pieces.length; j++) {
-				printPiece(pieces[i][j], false);
+	private static void printBoard(ChessPiece[][] pieces, Color currentPlayer) {
+		if (currentPlayer == Color.WHITE) {
+			for (int i = 0; i < pieces.length; i++) {
+				System.out.print((8 - i) + " ");
+				for (int j = 0; j < pieces.length; j++) {
+					printPiece(pieces[i][j], false);
+				}
+				System.out.println();
 			}
-			System.out.println();
+			System.out.println("  a b c d e f g h");
 		}
-		System.out.println("  a b c d e f g h");
+		else {
+			for (int i = pieces.length - 1; i >= 0; i--) {
+				System.out.print((8 - i) + " ");
+				for (int j = pieces.length - 1; j >= 0; j--) {
+					printPiece(pieces[i][j], false);
+				}
+				System.out.println();
+			}
+			System.out.println("  h g f e d c b a");
+		}
 	}
 
-	public static void printBoard(ChessPiece[][] pieces, boolean[][] possibleMoves) {
-		for (int i = 0; i < pieces.length; i++) {
-			System.out.print((8 - i) + " ");
-			for (int j = 0; j < pieces.length; j++) {
-				printPiece(pieces[i][j], possibleMoves[i][j]);
+	public static void printBoard(ChessPiece[][] pieces, boolean[][] possibleMoves, Color currentPlayer) {
+		if (currentPlayer == Color.WHITE) {
+			for (int i = 0; i < pieces.length; i++) {
+				System.out.print((8 - i) + " ");
+				for (int j = 0; j < pieces.length; j++) {
+					printPiece(pieces[i][j], possibleMoves[i][j]);
+				}
+				System.out.println();
 			}
-			System.out.println();
+			System.out.println("  a b c d e f g h");
 		}
-		System.out.println("  a b c d e f g h");
+		else {
+			for (int i = pieces.length - 1; i >= 0; i--) {
+				System.out.print((8 - i) + " ");
+				for (int j = pieces.length - 1; j >= 0; j--) {
+					printPiece(pieces[i][j], possibleMoves[i][j]);
+				}
+				System.out.println();
+			}
+			System.out.println("  h g f e d c b a");
+		}
 	}
 
 	private static void printPiece(ChessPiece piece, boolean background) {
