@@ -16,18 +16,28 @@ public class TrainingMode {
 		ChessMatch chessMatch = new ChessMatch();
 		Scanner sc = new Scanner(System.in);
 		
+		Color pov;
+		System.out.print("From which point of view would you like to train Black or White (b/w)? ");
+		char option = sc.next().charAt(0);
+		sc.nextLine();
+		if (option == 'b')
+			pov = Color.BLACK;
+		else
+			pov = Color.WHITE;
+		UI.clearScreen();
+		
 
 		while (!chessMatch.getCheckMate()) {
 			try {
 				UI.clearScreen();
-				UI.printMatch(chessMatch, Color.WHITE);
+				UI.printMatch(chessMatch, pov);
 				System.out.println();
 				System.out.print("Source: ");
 				ChessPosition source = UI.readChessPosition(sc);
 				
 				boolean[][] possibleMoves = chessMatch.possibleMoves(source);
 				UI.clearScreen();
-				UI.printBoard(chessMatch.getPieces(), possibleMoves, Color.WHITE);
+				UI.printBoard(chessMatch.getPieces(), possibleMoves, pov);
 				System.out.println();
 				System.out.print("Target: ");
 				ChessPosition target = UI.readChessPosition(sc);
